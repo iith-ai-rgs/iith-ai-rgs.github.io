@@ -340,3 +340,345 @@
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Reading Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav-bg:#d6d6d6;
+    --page-bg:#f7f7f7;
+    --ink:#1c1e26;
+    --gray:#6b6b6b;
+    --border:#c9c9c9;
+    --accent:#b5451e;
+    --white:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--page-bg);color:var(--ink);font-family:'Noto Serif', serif;}
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  nav{background:var(--nav-bg);padding:18px 24px;display:flex;justify-content:center;gap:44px;flex-wrap:wrap;}
+  nav a{color:#4a4a4a;font-size:19px;letter-spacing:.02em;font-weight:600;}
+  nav a:hover{color:var(--ink);text-decoration:none;}
+  main{max-width:1500px;margin:0 auto;padding:44px 3vw 90px;}
+  h1{font-size:36px;font-weight:700;color:var(--ink);margin:0 0 6px;}
+  .lede{color:var(--gray);font-size:18px;max-width:640px;margin:0 0 40px;font-style:italic;white-space:pre-line;}
+  h2{font-size:26px;font-weight:600;color:var(--ink);margin:56px 0 18px;}
+  h2:first-of-type{margin-top:0;}
+  h3{font-size:21px;font-weight:600;color:var(--ink);margin:36px 0 14px;}
+  table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);}
+  th, td{border:1px solid var(--border);padding:16px 18px;text-align:center;vertical-align:top;}
+  th{vertical-align:middle;}
+  th{font-size:16px;font-weight:600;color:var(--ink);}
+  td{font-size:16px;white-space:pre-line;}
+  tr:hover td{background:#fbfaf7;}
+  .avatar{width:56px;height:56px;border-radius:50%;background:#e4e0d6;color:#8a7f66;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;margin:0 auto 10px;overflow:hidden;}
+  .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+  .presenter-cell{display:flex;flex-direction:column;align-items:center;}
+  .name{color:var(--accent);font-weight:600;font-size:17px;}
+  .topic-title{font-weight:600;font-size:17px;color:var(--ink);text-align:left;display:block;}
+  td.topic-cell{text-align:left;}
+  .slides-link{display:inline-block;margin-top:8px;font-size:14px;}
+  td.about-cell{text-align:left;}
+  .session-about{color:var(--ink);font-size:14.5px;line-height:1.55;white-space:pre-line;}
+  .session-about.empty-row{color:#a3a3a3;}
+  td.refs-cell{text-align:left;}
+  .refs-list{margin:0;padding:0;list-style:none;color:var(--gray);font-size:14px;line-height:1.6;}
+  .refs-list li{margin-bottom:4px;}
+  .program-main{font-weight:700;font-size:16px;color:var(--ink);}
+  .program-sub{color:var(--gray);font-size:14px;margin-top:3px;}
+  .pill{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:4px;padding:4px 12px;font-size:14.5px;font-weight:600;}
+  .status-line{color:var(--gray);font-weight:600;font-size:14px;margin-top:6px;}
+  .empty-row{text-align:center;color:#a3a3a3;font-style:italic;}
+  .load-note{text-align:center;color:var(--gray);font-style:italic;padding:24px;}
+
+  .members-grid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;}
+  .member-card{
+    width:160px;background:var(--white);border:1px solid var(--border);
+    border-radius:6px;padding:22px 14px 18px;text-align:center;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .member-card .avatar{width:76px;height:76px;font-size:20px;margin:0 0 12px;flex-shrink:0;}
+  .member-card .name{display:block;margin-bottom:6px;line-height:1.35;}
+  .member-card .meta{color:var(--gray);font-size:13px;line-height:1.5;}
+  .members-grid .empty-row, .members-grid .load-note{width:100%;padding:20px 0;}
+  .error-note{
+    background:#fbeee9;border:1px solid #e0b6a6;color:#8a3a1e;
+    padding:16px 18px;border-radius:4px;font-size:14px;line-height:1.6;margin-bottom:20px;
+  }
+  .error-note code{background:#f4dcd1;padding:1px 6px;border-radius:3px;}
+  footer{max-width:1500px;margin:0 auto;padding:0 3vw 50px;color:var(--gray);font-size:14px;text-align:center;}
+  @media (max-width:800px){
+    table, thead, tbody, th, td, tr{display:block;}
+    thead{display:none;}
+    tr{border:1px solid var(--border);margin-bottom:16px;}
+    td{border:none;border-bottom:1px solid var(--border);text-align:left;padding:12px 16px;}
+    td:last-child{border-bottom:none;}
+    td.topic-cell, td.about-cell, td.refs-cell{text-align:left;}
+    .presenter-cell{flex-direction:row;align-items:center;gap:12px;}
+    .avatar{margin:0;}
+    td::before{content:attr(data-label);display:block;font-size:11px;letter-spacing:.03em;color:var(--gray);margin-bottom:6px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#schedule">Schedule</a>
+  <a href="#members">Members</a>
+  <a href="#about">About</a>
+</nav>
+
+<main>
+  <div id="configError"></div>
+
+  <div id="home"></div>
+  <h1>Reading group</h1>
+  <p class="lede" id="descriptionText"></p>
+
+  <h2 id="schedule">Upcoming sessions</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:18%;">Presenter</th>
+        <th>Topic</th>
+        <th style="width:22%;">About</th>
+        <th style="width:22%;">References</th>
+        <th style="width:14%;">Program</th>
+        <th style="width:15%;">Session</th>
+      </tr>
+    </thead>
+    <tbody id="upcomingBody"><tr><td colspan="6" class="load-note">Loading…</td></tr></tbody>
+  </table>
+
+  <h2>Past sessions</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:18%;">Presenter</th>
+        <th>Topic</th>
+        <th style="width:22%;">About</th>
+        <th style="width:22%;">References</th>
+        <th style="width:14%;">Program</th>
+        <th style="width:15%;">Session</th>
+      </tr>
+    </thead>
+    <tbody id="pastBody"><tr><td colspan="6" class="load-note">Loading…</td></tr></tbody>
+  </table>
+
+  <h2 id="members">Members</h2>
+
+  <h3>Current members</h3>
+  <div class="members-grid" id="currentMembersBody">
+    <div class="load-note">Loading…</div>
+  </div>
+
+  <h3>Alumni</h3>
+  <div class="members-grid" id="alumniBody">
+    <div class="load-note">Loading…</div>
+  </div>
+
+  <h2 id="about">About</h2>
+  <p class="lede" style="font-style:normal;" id="aboutText"></p>
+</main>
+
+<footer>AI Reading Group &middot; Department of Artificial Intelligence</footer>
+
+<script>
+(function () {
+  // ======================================================================
+  // CONFIG — paste your Google Sheet ID between the quotes below.
+  // It's the long string in your sheet's URL:
+  // https://docs.google.com/spreadsheets/d/THIS_PART_HERE/edit
+  // The sheet must have two tabs named exactly "Sessions" and "Members",
+  // and must be shared as "Anyone with the link — Viewer".
+  // ======================================================================
+  var SHEET_ID = "1UsXyhVhe6mO9nZH5pn1tZPcrEbIM_zUpYAynqu1LZmA";
+  // ======================================================================
+
+  function esc(s) {
+    return (s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Turns a reference entry into clickable HTML.
+  // Supports three forms:
+  //   "Plain text, no link"
+  //   "Custom label text => https://example.com/paper.pdf"
+  //   "Some text with a bare https://example.com URL inside it"
+  function linkify(item) {
+    var arrowSplit = item.split('=>');
+    if (arrowSplit.length === 2 && /^https?:\/\//i.test(arrowSplit[1].trim())) {
+      var label = arrowSplit[0].trim();
+      var url = arrowSplit[1].trim();
+      return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label || url) + '</a>';
+    }
+    var urlMatch = item.match(/https?:\/\/[^\s]+/i);
+    if (urlMatch) {
+      var url = urlMatch[0].replace(/[),.]+$/, ''); // trim trailing punctuation
+      var before = item.slice(0, urlMatch.index);
+      var after = item.slice(urlMatch.index + url.length);
+      return esc(before) + '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>' + esc(after);
+    }
+    return esc(item);
+  }
+
+  function todayISO() {
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + day;
+  }
+
+  function fmtDate(iso) {
+    var d = new Date(iso + 'T00:00:00');
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function initials(name) {
+    return (name || '').trim().split(/\s+/).map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+  }
+
+  function avatarHtml(name, photo) {
+    if (photo) return '<div class="avatar"><img src="' + esc(photo) + '" alt=""></div>';
+    return '<div class="avatar">' + esc(initials(name)) + '</div>';
+  }
+
+  function slideLink(raw) {
+    if (!raw) return '';
+    var arrowSplit = raw.split('=>');
+    var label, url;
+    if (arrowSplit.length === 2 && /^https?:\/\//i.test(arrowSplit[1].trim())) {
+      label = arrowSplit[0].trim();
+      url = arrowSplit[1].trim();
+    } else {
+      label = 'Slides';
+      url = raw.trim();
+    }
+    return '<a class="slides-link" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + ' &#8599;</a>';
+  }
+
+  function nameLink(name, profileUrl) {
+    if (profileUrl && profileUrl.trim()) {
+      return '<a class="name" href="' + esc(profileUrl.trim()) + '" target="_blank" rel="noopener noreferrer">' + esc(name) + '</a>';
+    }
+    return '<span class="name">' + esc(name) + '</span>';
+  }
+
+  function findProfileByName(name, members) {
+    if (!name) return '';
+    var target = name.trim().toLowerCase();
+    var match = (members || []).find(function (m) { return (m.name || '').trim().toLowerCase() === target; });
+    return match ? (match.profile || '') : '';
+  }
+
+  function sessionRow(s, isUpcoming, members) {
+    var refs = (s.references || '').split('|').map(function (r) { return r.trim(); }).filter(Boolean);
+    var refsHtml = refs.length
+      ? '<ul class="refs-list">' + refs.map(function (r) { return '<li>' + linkify(r) + '</li>'; }).join('') + '</ul>'
+      : '<span class="empty-row">No references added</span>';
+    var slidesHtml = slideLink(s.slides);
+    var aboutHtml = s.about
+      ? '<div class="session-about">' + esc(s.about) + '</div>'
+      : '<span class="session-about empty-row">No description added</span>';
+    // Prefer a profile link entered directly on the session (e.g. a guest speaker);
+    // otherwise look the presenter up by name in the Members list.
+    var presenterProfile = (s.profile && s.profile.trim()) || findProfileByName(s.presenter, members);
+    return '' +
+      '<tr>' +
+        '<td data-label="Presenter"><div class="presenter-cell">' + avatarHtml(s.presenter, s.photo) + nameLink(s.presenter, presenterProfile) + '</div></td>' +
+        '<td data-label="Topic" class="topic-cell"><span class="topic-title">' + esc(s.title) + '</span>' + slidesHtml + '</td>' +
+        '<td data-label="About" class="about-cell">' + aboutHtml + '</td>' +
+        '<td data-label="References" class="refs-cell">' + refsHtml + '</td>' +
+        '<td data-label="Program"><div class="program-main">' + esc(s.program) + '</div><div class="program-sub">Batch of ' + esc(s.batch) + '</div></td>' +
+        '<td data-label="Session"><span class="pill">' + fmtDate(s.date) + '</span><div class="status-line">' + (isUpcoming ? 'Upcoming' : 'Presented') + '</div></td>' +
+      '</tr>';
+  }
+
+  function memberRow(m) {
+    return '' +
+      '<div class="member-card">' +
+        avatarHtml(m.name, m.photo) +
+        nameLink(m.name, m.profile) +
+        '<div class="meta">' + esc(m.program) + '<br>Batch of ' + esc(m.batch) + '</div>' +
+      '</div>';
+  }
+
+  function showConfigError(msg) {
+    document.getElementById('configError').innerHTML =
+      '<div class="error-note">' + msg + '</div>';
+    ['upcomingBody', 'pastBody'].forEach(function (id) {
+      var el = document.getElementById(id);
+      el.innerHTML = '<tr><td colspan="6" class="empty-row">Waiting on the Google Sheet connection above</td></tr>';
+    });
+    ['currentMembersBody', 'alumniBody'].forEach(function (id) {
+      document.getElementById(id).innerHTML = '<div class="empty-row">Waiting on the Google Sheet connection above</div>';
+    });
+  }
+
+  function renderSessions(rows, members) {
+    var today = todayISO();
+    var sessions = rows.filter(function (s) { return s.date; }).slice().sort(function (a, b) { return a.date.localeCompare(b.date); });
+    var upcoming = sessions.filter(function (s) { return s.date >= today; });
+    var past = sessions.filter(function (s) { return s.date < today; }).reverse();
+
+    document.getElementById('upcomingBody').innerHTML =
+      upcoming.map(function (s) { return sessionRow(s, true, members); }).join('') ||
+      '<tr><td colspan="6" class="empty-row">No upcoming sessions yet</td></tr>';
+    document.getElementById('pastBody').innerHTML =
+      past.map(function (s) { return sessionRow(s, false, members); }).join('') ||
+      '<tr><td colspan="6" class="empty-row">No past sessions yet</td></tr>';
+  }
+
+  function renderMembers(rows) {
+    var current = rows.filter(function (m) { return (m.status || '').trim().toLowerCase() === 'current'; });
+    var alumni = rows.filter(function (m) { return (m.status || '').trim().toLowerCase() === 'alumni'; });
+
+    document.getElementById('currentMembersBody').innerHTML =
+      current.map(memberRow).join('') || '<div class="empty-row">No current members added yet</div>';
+    document.getElementById('alumniBody').innerHTML =
+      alumni.map(memberRow).join('') || '<div class="empty-row">No alumni added yet</div>';
+  }
+
+  if (!SHEET_ID || SHEET_ID === 'PASTE_YOUR_SHEET_ID_HERE') {
+    showConfigError(
+      'This site isn&rsquo;t connected to a Google Sheet yet. Open this file, find <code>SHEET_ID</code> near the ' +
+      'top of the script, and paste in your sheet&rsquo;s ID. See the setup notes for details.'
+    );
+    return;
+  }
+
+  var base = 'https://opensheet.elk.sh/' + SHEET_ID + '/';
+
+  Promise.all([
+    fetch(base + 'Sessions').then(function (r) { if (!r.ok) throw new Error('sessions'); return r.json(); }),
+    fetch(base + 'Members').then(function (r) { if (!r.ok) throw new Error('members'); return r.json(); })
+  ]).then(function (results) {
+    renderSessions(results[0], results[1]);
+    renderMembers(results[1]);
+  }).catch(function () {
+    showConfigError(
+      'Couldn&rsquo;t load data from the Google Sheet. Double-check that: the Sheet ID is correct, the sheet is ' +
+      'shared as <code>Anyone with the link &mdash; Viewer</code>, and it has tabs named exactly ' +
+      '<code>Sessions</code> and <code>Members</code>.'
+    );
+  });
+
+  // description / about text are fetched the same way, from a "Site" tab (optional)
+  fetch(base + 'Site').then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+    var row = rows[0] || {};
+    document.getElementById('descriptionText').textContent = row.description || '';
+    document.getElementById('aboutText').textContent = row.about || '';
+  }).catch(function () {});
+})();
+</script>
+</body>
+</html>
