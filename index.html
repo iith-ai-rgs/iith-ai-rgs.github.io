@@ -53,6 +53,16 @@
   .status-line{color:var(--gray);font-weight:600;font-size:14px;margin-top:6px;}
   .empty-row{text-align:center;color:#a3a3a3;font-style:italic;}
   .load-note{text-align:center;color:var(--gray);font-style:italic;padding:24px;}
+
+  .members-grid{display:flex;flex-wrap:wrap;gap:18px;}
+  .member-card{
+    width:160px;background:var(--white);border:1px solid var(--border);
+    border-radius:6px;padding:22px 14px 18px;text-align:center;
+  }
+  .member-card .avatar{width:76px;height:76px;font-size:20px;margin:0 auto 12px;}
+  .member-card .name{display:block;margin-bottom:6px;}
+  .member-card .meta{color:var(--gray);font-size:13px;line-height:1.5;}
+  .members-grid .empty-row, .members-grid .load-note{width:100%;padding:20px 0;}
   .error-note{
     background:#fbeee9;border:1px solid #e0b6a6;color:#8a3a1e;
     padding:16px 18px;border-radius:4px;font-size:14px;line-height:1.6;margin-bottom:20px;
@@ -121,30 +131,14 @@
   <h2 id="members">Members</h2>
 
   <h3>Current members</h3>
-  <table>
-    <thead>
-      <tr>
-        <th style="width:90px;">Photo</th>
-        <th>Name</th>
-        <th style="width:20%;">Batch</th>
-        <th style="width:22%;">Program</th>
-      </tr>
-    </thead>
-    <tbody id="currentMembersBody"><tr><td colspan="4" class="load-note">Loading…</td></tr></tbody>
-  </table>
+  <div class="members-grid" id="currentMembersBody">
+    <div class="load-note">Loading…</div>
+  </div>
 
   <h3>Alumni</h3>
-  <table>
-    <thead>
-      <tr>
-        <th style="width:90px;">Photo</th>
-        <th>Name</th>
-        <th style="width:20%;">Batch</th>
-        <th style="width:22%;">Program</th>
-      </tr>
-    </thead>
-    <tbody id="alumniBody"><tr><td colspan="4" class="load-note">Loading…</td></tr></tbody>
-  </table>
+  <div class="members-grid" id="alumniBody">
+    <div class="load-note">Loading…</div>
+  </div>
 
   <h2 id="about">About</h2>
   <p class="lede" style="font-style:normal;" id="aboutText"></p>
@@ -267,21 +261,22 @@
 
   function memberRow(m) {
     return '' +
-      '<tr>' +
-        '<td data-label="Photo">' + avatarHtml(m.name, m.photo) + '</td>' +
-        '<td data-label="Name">' + nameLink(m.name, m.profile) + '</td>' +
-        '<td data-label="Batch">' + esc(m.batch) + '</td>' +
-        '<td data-label="Program">' + esc(m.program) + '</td>' +
-      '</tr>';
+      '<div class="member-card">' +
+        avatarHtml(m.name, m.photo) +
+        nameLink(m.name, m.profile) +
+        '<div class="meta">' + esc(m.program) + '<br>Batch of ' + esc(m.batch) + '</div>' +
+      '</div>';
   }
 
   function showConfigError(msg) {
     document.getElementById('configError').innerHTML =
       '<div class="error-note">' + msg + '</div>';
-    ['upcomingBody', 'pastBody', 'currentMembersBody', 'alumniBody'].forEach(function (id) {
+    ['upcomingBody', 'pastBody'].forEach(function (id) {
       var el = document.getElementById(id);
-      var cols = id.indexOf('Members') > -1 ? 4 : 6;
-      el.innerHTML = '<tr><td colspan="' + cols + '" class="empty-row">Waiting on the Google Sheet connection above</td></tr>';
+      el.innerHTML = '<tr><td colspan="6" class="empty-row">Waiting on the Google Sheet connection above</td></tr>';
+    });
+    ['currentMembersBody', 'alumniBody'].forEach(function (id) {
+      document.getElementById(id).innerHTML = '<div class="empty-row">Waiting on the Google Sheet connection above</div>';
     });
   }
 
@@ -304,9 +299,9 @@
     var alumni = rows.filter(function (m) { return (m.status || '').trim().toLowerCase() === 'alumni'; });
 
     document.getElementById('currentMembersBody').innerHTML =
-      current.map(memberRow).join('') || '<tr><td colspan="4" class="empty-row">No current members added yet</td></tr>';
+      current.map(memberRow).join('') || '<div class="empty-row">No current members added yet</div>';
     document.getElementById('alumniBody').innerHTML =
-      alumni.map(memberRow).join('') || '<tr><td colspan="4" class="empty-row">No alumni added yet</td></tr>';
+      alumni.map(memberRow).join('') || '<div class="empty-row">No alumni added yet</div>';
   }
 
   if (!SHEET_ID || SHEET_ID === 'PASTE_YOUR_SHEET_ID_HERE') {
