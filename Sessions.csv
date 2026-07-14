@@ -1,0 +1,5 @@
+title,presenter,photo,program,batch,date,slides,about,references,profile
+Diffusion Models Beyond Images,Ananya Rao,,PhD,2024,2026-07-20,,"A look at diffusion generation outside images: audio, molecules, robot trajectories.","Original paper => https://arxiv.org/abs/2006.11239|Ho et al., Denoising Diffusion Probabilistic Models (2020)|Janner et al., Planning with Diffusion (2022)",
+RLHF in Practice,Divya Iyer,,MTech,2025,2026-07-27,,A practitioner's look at reward model instability and the annotation pipeline.,"Ouyang et al., InstructGPT (2022)|Rafailov et al., Direct Preference Optimization (2023)",
+"Attention Is All You Need, Revisited",Ananya Rao,,PhD,2024,2026-05-18,,A close reread of the original Transformer paper.,"Vaswani et al., Attention Is All You Need (2017)",
+Guest Talk: Scaling Laws in Practice,Dr. Rahul Verma (Guest),,PhD,,2026-08-10,,A guest lecture from outside the department.,,https://example.com/rahul-verma-profile
