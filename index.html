@@ -30,7 +30,8 @@
   h2:first-of-type{margin-top:0;}
   h3{font-size:21px;font-weight:600;color:var(--ink);margin:36px 0 14px;}
   table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);}
-  th, td{border:1px solid var(--border);padding:16px 18px;text-align:center;vertical-align:middle;}
+  th, td{border:1px solid var(--border);padding:16px 18px;text-align:center;vertical-align:top;}
+  th{vertical-align:middle;}
   th{font-size:16px;font-weight:600;color:var(--ink);}
   td{font-size:16px;white-space:pre-line;}
   tr:hover td{background:#fbfaf7;}
@@ -54,13 +55,14 @@
   .empty-row{text-align:center;color:#a3a3a3;font-style:italic;}
   .load-note{text-align:center;color:var(--gray);font-style:italic;padding:24px;}
 
-  .members-grid{display:flex;flex-wrap:wrap;gap:18px;}
+  .members-grid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;}
   .member-card{
     width:160px;background:var(--white);border:1px solid var(--border);
     border-radius:6px;padding:22px 14px 18px;text-align:center;
+    display:flex;flex-direction:column;align-items:center;
   }
-  .member-card .avatar{width:76px;height:76px;font-size:20px;margin:0 auto 12px;}
-  .member-card .name{display:block;margin-bottom:6px;}
+  .member-card .avatar{width:76px;height:76px;font-size:20px;margin:0 0 12px;flex-shrink:0;}
+  .member-card .name{display:block;margin-bottom:6px;line-height:1.35;}
   .member-card .meta{color:var(--gray);font-size:13px;line-height:1.5;}
   .members-grid .empty-row, .members-grid .load-note{width:100%;padding:20px 0;}
   .error-note{
