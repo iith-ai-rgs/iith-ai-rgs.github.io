@@ -25,12 +25,19 @@
   nav a:hover{color:var(--ink);text-decoration:none;}
   main{max-width:1500px;margin:0 auto;padding:44px 3vw 90px;}
   h1{font-size:36px;font-weight:700;color:var(--ink);margin:0 0 6px;}
-  .lede{color:var(--gray);font-size:18px;max-width:900px;margin:0 0 40px;font-style:italic;white-space:pre-line;}
+  .lede{color:var(--gray);font-size:18px;margin:0 0 40px;font-style:italic;white-space:pre-line;line-height:1.6;max-width:1100px;}
   h2{font-size:26px;font-weight:600;color:var(--ink);margin:56px 0 18px;}
   h2:first-of-type{margin-top:0;}
   h3{font-size:21px;font-weight:600;color:var(--ink);margin:36px 0 14px;}
-  table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);}
-  th, td{border:1px solid var(--border);padding:16px 18px;text-align:center;vertical-align:top;}
+  table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);table-layout:fixed;}
+  /* Identical column widths for BOTH session tables so they line up exactly */
+  .sessions-table col.col-presenter{width:15%;}
+  .sessions-table col.col-topic{width:21%;}
+  .sessions-table col.col-about{width:22%;}
+  .sessions-table col.col-refs{width:20%;}
+  .sessions-table col.col-program{width:11%;}
+  .sessions-table col.col-session{width:11%;}
+  th, td{border:1px solid var(--border);padding:16px 18px;text-align:center;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word;}
   th{vertical-align:middle;}
   th{font-size:16px;font-weight:600;color:var(--ink);}
   td{font-size:16px;white-space:pre-line;}
@@ -55,15 +62,15 @@
   .empty-row{text-align:center;color:#a3a3a3;font-style:italic;}
   .load-note{text-align:center;color:var(--gray);font-style:italic;padding:24px;}
 
-  .members-grid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;}
+  .members-grid{display:flex;flex-wrap:wrap;gap:18px;align-items:stretch;justify-content:center;}
   .member-card{
-    width:160px;background:var(--white);border:1px solid var(--border);
+    width:170px;background:var(--white);border:1px solid var(--border);
     border-radius:6px;padding:22px 14px 18px;text-align:center;
     display:flex;flex-direction:column;align-items:center;
   }
-  .member-card .avatar{width:76px;height:76px;font-size:20px;margin:0 0 12px;flex-shrink:0;}
-  .member-card .name{display:block;margin-bottom:6px;line-height:1.35;}
-  .member-card .meta{color:var(--gray);font-size:13px;line-height:1.5;}
+  .member-card .avatar{width:80px;height:80px;font-size:22px;margin:0 0 14px;flex-shrink:0;}
+  .member-card .name{display:block;margin-bottom:8px;line-height:1.35;}
+  .member-card .meta{color:var(--gray);font-size:13px;line-height:1.5;margin-top:auto;}
   .members-grid .empty-row, .members-grid .load-note{width:100%;padding:20px 0;}
   .error-note{
     background:#fbeee9;border:1px solid #e0b6a6;color:#8a3a1e;
@@ -72,6 +79,7 @@
   .error-note code{background:#f4dcd1;padding:1px 6px;border-radius:3px;}
   footer{max-width:1500px;margin:0 auto;padding:0 3vw 50px;color:var(--gray);font-size:14px;text-align:center;}
   @media (max-width:800px){
+    table{table-layout:auto;}
     table, thead, tbody, th, td, tr{display:block;}
     thead{display:none;}
     tr{border:1px solid var(--border);margin-bottom:16px;}
@@ -101,30 +109,38 @@
   <p class="lede" id="descriptionText"></p>
 
   <h2 id="schedule">Upcoming sessions</h2>
-  <table>
+  <table class="sessions-table">
+    <colgroup>
+      <col class="col-presenter"><col class="col-topic"><col class="col-about">
+      <col class="col-refs"><col class="col-program"><col class="col-session">
+    </colgroup>
     <thead>
       <tr>
-        <th style="width:18%;">Presenter</th>
+        <th>Presenter</th>
         <th>Topic</th>
-        <th style="width:22%;">About</th>
-        <th style="width:22%;">References</th>
-        <th style="width:14%;">Program</th>
-        <th style="width:15%;">Session</th>
+        <th>About</th>
+        <th>References</th>
+        <th>Program</th>
+        <th>Session</th>
       </tr>
     </thead>
     <tbody id="upcomingBody"><tr><td colspan="6" class="load-note">Loading…</td></tr></tbody>
   </table>
 
   <h2>Past sessions</h2>
-  <table>
+  <table class="sessions-table">
+    <colgroup>
+      <col class="col-presenter"><col class="col-topic"><col class="col-about">
+      <col class="col-refs"><col class="col-program"><col class="col-session">
+    </colgroup>
     <thead>
       <tr>
-        <th style="width:18%;">Presenter</th>
+        <th>Presenter</th>
         <th>Topic</th>
-        <th style="width:22%;">About</th>
-        <th style="width:22%;">References</th>
-        <th style="width:14%;">Program</th>
-        <th style="width:15%;">Session</th>
+        <th>About</th>
+        <th>References</th>
+        <th>Program</th>
+        <th>Session</th>
       </tr>
     </thead>
     <tbody id="pastBody"><tr><td colspan="6" class="load-note">Loading…</td></tr></tbody>
