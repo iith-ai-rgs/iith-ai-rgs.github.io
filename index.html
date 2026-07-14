@@ -44,7 +44,10 @@
   tr:hover td{background:#fbfaf7;}
   .avatar{width:56px;height:56px;border-radius:50%;background:#e4e0d6;color:#8a7f66;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;margin:0 auto 10px;overflow:hidden;}
   .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-  .presenter-cell{display:flex;flex-direction:column;align-items:center;}
+  td.presenter-td{vertical-align:middle;}
+  td.mid-td{vertical-align:middle;}
+  .presenter-cell{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .presenter-cell .avatar{margin:0 0 6px;}
   .name{color:var(--accent);font-weight:600;font-size:17px;}
   .topic-title{font-weight:600;font-size:17px;color:var(--ink);text-align:left;display:block;}
   td.topic-cell{text-align:left;}
@@ -53,13 +56,20 @@
   .session-about{color:var(--ink);font-size:14.5px;line-height:1.55;white-space:pre-line;}
   .session-about.empty-row{color:#a3a3a3;}
   td.refs-cell{text-align:left;}
-  .refs-list{margin:0;padding:0;list-style:none;color:var(--gray);font-size:14px;line-height:1.6;}
-  .refs-list li{margin-bottom:4px;}
+  .refs-list{margin:0;padding:0;list-style:none;color:var(--gray);font-size:14px;line-height:1.6;text-align:left;}
+  .refs-list li{margin-bottom:8px;word-break:break-word;overflow-wrap:anywhere;}
+  .ref-link{
+    display:inline-block;border:1px solid var(--accent);color:var(--accent);
+    border-radius:4px;padding:1px 8px;font-size:12.5px;font-weight:600;
+    white-space:nowrap;margin-left:2px;
+  }
+  .ref-link:hover{background:var(--accent);color:#fff;text-decoration:none;}
   .program-main{font-weight:700;font-size:16px;color:var(--ink);}
   .program-sub{color:var(--gray);font-size:14px;margin-top:3px;}
   .pill{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:4px;padding:4px 12px;font-size:14.5px;font-weight:600;}
   .status-line{color:var(--gray);font-weight:600;font-size:14px;margin-top:6px;}
   .empty-row{text-align:center;color:#a3a3a3;font-style:italic;}
+  .cell-empty{display:block;text-align:center;color:#c4c4c4;font-size:18px;}
   .load-note{text-align:center;color:var(--gray);font-style:italic;padding:24px;}
 
   .members-grid{display:flex;flex-wrap:wrap;gap:18px;align-items:stretch;justify-content:center;}
@@ -183,10 +193,11 @@
   }
 
   // Turns a reference entry into clickable HTML.
-  // Supports three forms:
-  //   "Plain text, no link"
-  //   "Custom label text => https://example.com/paper.pdf"
-  //   "Some text with a bare https://example.com URL inside it"
+  // Supports:
+  //   "Plain text, no link"                              -> plain text
+  //   "Custom label => https://example.com/paper.pdf"    -> clickable "Custom label"
+  //   "Some descriptive text https://example.com"        -> text + compact "link ↗"
+  //   "https://example.com" (bare url on its own)        -> compact "link ↗"
   function linkify(item) {
     var arrowSplit = item.split('=>');
     if (arrowSplit.length === 2 && /^https?:\/\//i.test(arrowSplit[1].trim())) {
@@ -197,9 +208,12 @@
     var urlMatch = item.match(/https?:\/\/[^\s]+/i);
     if (urlMatch) {
       var url = urlMatch[0].replace(/[),.]+$/, ''); // trim trailing punctuation
-      var before = item.slice(0, urlMatch.index);
-      var after = item.slice(urlMatch.index + url.length);
-      return esc(before) + '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>' + esc(after);
+      var before = item.slice(0, urlMatch.index).trim();
+      var after = item.slice(urlMatch.index + url.length).trim();
+      var chip = '<a class="ref-link" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">link &#8599;</a>';
+      var text = (before + ' ' + after).trim();
+      // If there's descriptive text around the URL, show text + chip; otherwise just the chip.
+      return text ? esc(text) + ' ' + chip : chip;
     }
     return esc(item);
   }
@@ -258,22 +272,22 @@
     var refs = (s.references || '').split('|').map(function (r) { return r.trim(); }).filter(Boolean);
     var refsHtml = refs.length
       ? '<ul class="refs-list">' + refs.map(function (r) { return '<li>' + linkify(r) + '</li>'; }).join('') + '</ul>'
-      : '<span class="empty-row">No references added</span>';
+      : '<span class="cell-empty">&mdash;</span>';
     var slidesHtml = slideLink(s.slides);
     var aboutHtml = s.about
       ? '<div class="session-about">' + esc(s.about) + '</div>'
-      : '<span class="session-about empty-row">No description added</span>';
+      : '<span class="cell-empty">&mdash;</span>';
     // Prefer a profile link entered directly on the session (e.g. a guest speaker);
     // otherwise look the presenter up by name in the Members list.
     var presenterProfile = (s.profile && s.profile.trim()) || findProfileByName(s.presenter, members);
     return '' +
       '<tr>' +
-        '<td data-label="Presenter"><div class="presenter-cell">' + avatarHtml(s.presenter, s.photo) + nameLink(s.presenter, presenterProfile) + '</div></td>' +
-        '<td data-label="Topic" class="topic-cell"><span class="topic-title">' + esc(s.title) + '</span>' + slidesHtml + '</td>' +
+        '<td data-label="Presenter" class="presenter-td"><div class="presenter-cell">' + avatarHtml(s.presenter, s.photo) + nameLink(s.presenter, presenterProfile) + '</div></td>' +
+        '<td data-label="Topic" class="topic-cell">' + '<span class="topic-title">' + esc(s.title) + '</span>' + slidesHtml + '</td>' +
         '<td data-label="About" class="about-cell">' + aboutHtml + '</td>' +
         '<td data-label="References" class="refs-cell">' + refsHtml + '</td>' +
-        '<td data-label="Program"><div class="program-main">' + esc(s.program) + '</div><div class="program-sub">Batch of ' + esc(s.batch) + '</div></td>' +
-        '<td data-label="Session"><span class="pill">' + fmtDate(s.date) + '</span><div class="status-line">' + (isUpcoming ? 'Upcoming' : 'Presented') + '</div></td>' +
+        '<td data-label="Program" class="mid-td"><div class="program-main">' + esc(s.program) + '</div><div class="program-sub">Batch of ' + esc(s.batch) + '</div></td>' +
+        '<td data-label="Session" class="mid-td"><span class="pill">' + fmtDate(s.date) + '</span><div class="status-line">' + (isUpcoming ? 'Upcoming' : 'Presented') + '</div></td>' +
       '</tr>';
   }
 
